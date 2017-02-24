@@ -22,13 +22,15 @@ typedef float koef_t;
 typedef vector<neuron_state> neurons_line;
 typedef vector<vector<koef_t>> link_koefs;
 
-struct neuro_net_system {
+struct neuro_net_system 
+{
 	const link_koefs &_koefs;
 	size_t _steps_processed;
 
 	neuro_net_system(const link_koefs &koefs) : _koefs(koefs) {}
 
-	bool Execute(neurons_line *line) {
+	bool Execute(neurons_line *line) 
+	{
 		bool value_changed = false;
 
 		neurons_line old_values(begin(*line), end(*line));
@@ -54,11 +56,13 @@ struct neuro_net_system {
 		return value_changed;
 	}
 
-	neurons_line* operator () (neurons_line *line) {
+	neurons_line* operator () (neurons_line *line)
+	{
 		bool need_continue = true;
 		_steps_processed = 0;
 
-		while (need_continue) {
+		while (need_continue) 
+		{
 			need_continue = Execute(line);
 			++_steps_processed;
 		}
@@ -67,12 +71,14 @@ struct neuro_net_system {
 	}
 };
 
-link_koefs LearnNeuroNet(const list<neurons_line> &src_images) {
+link_koefs LearnNeuroNet(const list<neurons_line> &src_images)
+{
 	link_koefs result_koefs;
 	size_t neurons_count = src_images.front().size();
 
 	result_koefs.resize(neurons_count);
-	for (size_t i = 0; i < neurons_count; ++i) {
+	for (size_t i = 0; i < neurons_count; ++i)
+	{
 		result_koefs[i].resize(neurons_count, 0);
 	}
 
@@ -90,7 +96,8 @@ link_koefs LearnNeuroNet(const list<neurons_line> &src_images) {
 	return result_koefs;
 }
 
-struct neurons_line_print_descriptor {
+struct neurons_line_print_descriptor 
+{
 	const neurons_line &_line;
 	const size_t _width;
 	const size_t _height;
@@ -99,11 +106,14 @@ struct neurons_line_print_descriptor {
 };
 
 template <typename Ch, typename Tr>
-std::basic_ostream<Ch, Tr>& operator << (std::basic_ostream<Ch, Tr>&stm, const neurons_line_print_descriptor &line) {
+std::basic_ostream<Ch, Tr>& operator << (std::basic_ostream<Ch, Tr>&stm, const neurons_line_print_descriptor &line)
+{
 	neurons_line::const_iterator it = begin(line._line), it_end = end(line._line);
 
-	for (size_t i = 0; i < line._height; ++i) {
-		for (size_t j = 0; j < line._width; ++j) {
+	for (size_t i = 0; i < line._height; ++i)
+	{
+		for (size_t j = 0; j < line._width; ++j) 
+		{
 			if (*it > 0)
 				cout << " ";
 			else
@@ -116,14 +126,16 @@ std::basic_ostream<Ch, Tr>& operator << (std::basic_ostream<Ch, Tr>&stm, const n
 	return stm;
 }
 
-neurons_line read_neurons_state(const std::string &file_path, size_t len) {
+neurons_line read_neurons_state(const std::string &file_path, size_t len) 
+{
 	std::ifstream i_file(file_path);
 
 	size_t i = 0;
 	neurons_line result;
 	result.reserve(len);
 
-	while (i++ < len) {
+	while (i++ < len)
+	{
 		char val;
 		i_file >> val;
 		neuron_state state = (val == '0' ? LOWER_STATE : UPPER_STATE);
@@ -139,23 +151,21 @@ int main(int argc, char* argv[])
 	std::string target_file_path;
 	size_t width, height;
 
-	if (argc < 4) {
-		cout << "Invalid parameters." << endl;
-		cout << "Usage: AppName WIDTH HEIGHT SOURCE_FILE LEARNING_FILE_1 [LEARNE_FILE_N]" << endl;
-		exit(1);
-	}
 
-	int arg_pos = 1;
-	width = atol(argv[arg_pos++]);
-	height = atol(argv[arg_pos++]);
-	target_file_path = argv[arg_pos++];
+	width = 10;
+	height = 10;
+	target_file_path = "src.txt";
+	
+	
+	src_images.push_back(read_neurons_state("t.txt", width * height));
+	cout << "learning image: " << endl;
+	cout << neurons_line_print_descriptor(src_images.back(), width, height) << endl;
+	
+	src_images.push_back(read_neurons_state("k.txt", width * height));
+	cout << "learning image: " << endl;
+	cout << neurons_line_print_descriptor(src_images.back(), width, height) << endl;
 
-	while (arg_pos < argc) {
-		src_images.push_back(read_neurons_state(argv[arg_pos++], width * height));
 
-		cout << "learning image: " << endl;
-		cout << neurons_line_print_descriptor(src_images.back(), width, height) << endl;
-	}
 
 	link_koefs koefs = LearnNeuroNet(src_images);
 
@@ -171,8 +181,6 @@ int main(int argc, char* argv[])
 	net(&line);
 	cout << neurons_line_print_descriptor(line, width, height) << endl;
 	cout << "---------------------------" << endl;
-
-	system("pause");
 
 	return 0;
 }
