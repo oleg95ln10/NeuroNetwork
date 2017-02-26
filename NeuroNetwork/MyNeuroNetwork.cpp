@@ -25,3 +25,22 @@ link_koefs LearnNeuroNet(const std::list<neurons_line> &src_images)
 
 	return result_koefs;
 }
+
+neurons_line read_neurons_state(const std::string &file_path, size_t len)
+{
+	std::ifstream i_file(file_path);
+
+	size_t i = 0;
+	neurons_line result;
+	result.reserve(len);
+
+	while (i++ < len)
+	{
+		char val;
+		i_file >> val;
+		neuron_state state = (val == '0' ? LOWER_STATE : UPPER_STATE);
+		result.push_back(state);
+	}
+
+	return result;
+}

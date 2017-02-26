@@ -147,10 +147,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="MyNeuroNetwork.cpp" />
-    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="NeuroNetSystem.cpp" />
+    <ClCompile Include="NeuronsLinePrintDescriptor.cpp" />
+    <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="MyNeuroNetwork.h" />
+    <ClInclude Include="NeuroNetSystem.h" />
+    <ClInclude Include="NeuronsLinePrintDescriptor.h" />
     <ClInclude Include="TypeDefines.h" />
     <ClInclude Include="NeuronState.h" />
   </ItemGroup>
